@@ -216,3 +216,40 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# PROJECT SPECIFIC
+
+
+# Local AI instruction files (never push these)
+CLAUDE.md
+AGENTS.md
+PROJECT_CONTEXT.md
+
+# Environment variables and secrets
+.env
+.env.local
+.env.production
+
+# Benchmark results (generated output)
+results/
+!results/.gitkeep
+
+# Test cases downloaded from HuggingFace (too large for git)
+test_cases/sql_injection/*.py
+test_cases/xss/*.py
+test_cases/hardcoded_secrets/*.py
+test_cases/weak_crypto/*.py
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# OS files
+.DS_Store
+Thumbs.db
