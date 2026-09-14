@@ -1,0 +1,135 @@
+# ============================================================
+# AI Security Benchmark Suite — Configuration File
+# ============================================================
+# Every tunable value in the project lives here.
+# No hardcoded values anywhere in the Python files.
+#
+# HOW TO USE:
+# In any Python file:
+#   import yaml
+#   with open("config.yaml") as f:
+#       config = yaml.safe_load(f)
+#   timeout = config["scanners"]["default_timeout"]
+# ============================================================
+
+
+# ─────────────────────────────────────────
+# DATASET SETTINGS
+# ─────────────────────────────────────────
+dataset:
+  # HuggingFace dataset identifier
+  name: "CyberNative-AI/Vulnerability_Detection_Dataset"
+
+  # How many samples to use (keep low while developing)
+  # Increase to 500+ for final benchmark run
+  sample_size: 50
+
+  # Only scan files of this language
+  language_filter: "python"
+
+  # Local folder where downloaded samples are saved
+  # These are gitignored (too large for GitHub)
+  local_cache_dir: "test_cases"
+
+
+# ─────────────────────────────────────────
+# SCANNER SETTINGS
+# ─────────────────────────────────────────
+scanners:
+  # Maximum seconds any single scan can run
+  # before being killed (prevents infinite hangs)
+  default_timeout: 60
+
+  # Run scanners in parallel (faster)
+  # Set to false if you hit memory issues
+  parallel: true
+
+  # Maximum parallel workers
+  max_workers: 3
+
+  bandit:
+    enabled: true
+    # Minimum severity to report
+    # Options: LOW, MEDIUM, HIGH
+    severity_threshold: "LOW"
+    # Minimum confidence to report
+    confidence_threshold: "LOW"
+
+  semgrep:
+    enabled: true
+    # Ruleset to use
+    # "auto" uses Semgrep's recommended rules
+    # "p/python" uses Python-specific rules
+    ruleset: "p/python"
+    timeout: 90
+
+  pip_audit:
+    enabled: true
+    # Check for known CVEs in dependencies
+    # Points at your requirements.txt
+    requirements_file: "requirements.txt"
+
+
+# ─────────────────────────────────────────
+# DOCKER / SANDBOXING SETTINGS
+# ─────────────────────────────────────────
+docker:
+  # Enable sandboxed scanning inside Docker
+  # Use --sandboxed flag when running benchmark
+  enabled: false
+
+  # Docker image to use for sandboxed scans
+  image: "ai-security-benchmark:latest"
+
+  # Maximum memory per container (safety limit)
+  memory_limit: "512m"
+
+  # Maximum CPU per container
+  cpu_limit: "1.0"
+
+  # Timeout for container to start
+  container_timeout: 30
+
+
+# ─────────────────────────────────────────
+# BENCHMARK SETTINGS
+# ─────────────────────────────────────────
+benchmark:
+  # Folder where results are saved
+  results_dir: "results"
+
+  # Output formats to generate
+  # Options: json, csv
+  output_formats:
+    - json
+    - csv
+
+  # Vulnerability types to benchmark against
+  # Must match VulnerabilityType enum in models.py
+  vulnerability_types:
+    - "SQL_INJECTION"
+    - "XSS"
+    - "HARDCODED_SECRET"
+    - "WEAK_CRYPTO"
+    - "COMMAND_INJECTION"
+    - "DEPENDENCY_CVE"
+
+  # Line number tolerance for matching
+  # Finding on line 23 matches ground truth on line 25
+  # if tolerance is 2 or more
+  line_tolerance: 3
+
+
+# ─────────────────────────────────────────
+# LEADERBOARD SETTINGS
+# ─────────────────────────────────────────
+leaderboard:
+  # Metric to use for ranking
+  # Options: f1_score, precision, recall
+  rank_by: "f1_score"
+
+  # Show vulnerability breakdown table
+  show_breakdown: true
+
+  # Save leaderboard as text file alongside JSON
+  save_text: true
