@@ -174,15 +174,46 @@ def run_benchmark(
 
     completed = 0
 
-    for scanner in scanners:
+        for scanner in scanners:
         logger.info(
             f"\nRunning {scanner.get_name()} "
             f"on {total_files} files..."
         )
 
+        # pip-audit is a dependency scanner
+        # it should run ONCE on requirements.txt
+        # not once per file — that causes 50 timeouts
+        if scanner.get_name() == "pip-audit":
+            scan_result = scanner.run_scan(
+                "requirements.txt"
+            )
+            # Duplicate the result for every file
+            # so metrics calculation has same count
+            for file_path in unique_files:
+                import copy
+                file_result = copy.copy(scan_result)
+                file_result = type(scan_result)(
+                    tool_name=scan_result.tool_name,
+                    file_path=file_path,
+                    findings=scan_result.findings,
+                    scan_time_ms=scan_result.scan_time_ms,
+                    error=scan_result.error,
+                    success=scan_result.success
+                )
+                results[scanner.get_name()].append(
+                    file_result
+                )
+            completed += total_files
+            print(
+                f"\r  Progress: {completed}/{total_scans} "
+                f"({(completed/total_scans)*100:.0f}%) — "
+                f"pip-audit: scanned requirements.txt once",
+                end="",
+                flush=True
+            )
+            continue
+
         for file_path in unique_files:
-            # run_scan() is the safe wrapper in
-            # scanners.py — handles timing and errors
             scan_result = scanner.run_scan(file_path)
             results[scanner.get_name()].append(scan_result)
 
@@ -196,7 +227,6 @@ def run_benchmark(
                 end="",
                 flush=True
             )
-
     print()  # New line after progress indicator
     return results
 
