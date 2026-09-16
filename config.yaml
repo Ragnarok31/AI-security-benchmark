@@ -18,7 +18,7 @@
 # ─────────────────────────────────────────
 dataset:
   # HuggingFace dataset identifier
-  name: "CyberNative-AI/Vulnerability_Detection_Dataset"
+  name: "cmonplz/Python_Vulnerability_Remediation"
 
   # How many samples to use (keep low while developing)
   # Increase to 500+ for final benchmark run
