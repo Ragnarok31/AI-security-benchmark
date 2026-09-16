@@ -1,0 +1,50 @@
+# ============================================================
+# AI Security Benchmark Suite — Docker Compose
+# ============================================================
+# Orchestrates the benchmark container with proper
+# volume mounts and resource limits.
+#
+# USAGE:
+#   docker compose -f docker/docker-compose.yml up
+#
+# This mounts your local test_cases/ and results/
+# folders into the container so:
+# - Scanners can read your test files
+# - Results are saved back to your machine
+# ============================================================
+
+version: "3.9"
+
+services:
+  benchmark:
+    # Build from our Dockerfile
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+
+    # Image name
+    image: ai-security-benchmark:latest
+
+    # Mount local folders into container
+    # test_cases → scanners can read your files
+    # results    → benchmark output saved to your machine
+    volumes:
+      - ../test_cases:/app/test_cases:ro
+      - ../results:/app/results
+      - ../config.yaml:/app/config.yaml:ro
+
+    # Resource limits — prevent runaway containers
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+
+    # Environment variables
+    environment:
+      - PYTHONUNBUFFERED=1
+
+    # Keep container running for debugging
+    # Remove this line in production
+    stdin_open: true
+    tty: true
