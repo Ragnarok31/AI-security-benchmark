@@ -106,7 +106,7 @@ class SemgrepAdapter(SecurityScanner):
     Adapter that runs Semgrep and returns Finding objects.
 
     Usage:
-        scanner = SemgrepAdapter(timeout=90)
+        scanner = SemgrepAdapter(timeout=120)
         if scanner.is_available():
             result = scanner.run_scan("path/to/file.py")
             print(result.findings)
