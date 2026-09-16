@@ -174,7 +174,7 @@ def run_benchmark(
 
     completed = 0
 
-        for scanner in scanners:
+    for scanner in scanners:
         logger.info(
             f"\nRunning {scanner.get_name()} "
             f"on {total_files} files..."
