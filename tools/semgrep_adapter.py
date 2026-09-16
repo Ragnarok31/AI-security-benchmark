@@ -117,7 +117,7 @@ class SemgrepAdapter(SecurityScanner):
     90 seconds (overrides parent's 60s default).
     """
 
-    def __init__(self, timeout: int = 90):
+    def __init__(self, timeout: int = 120):
         """Initialize with longer default timeout."""
         super().__init__(timeout=timeout)
 
