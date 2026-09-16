@@ -1,6 +1,8 @@
 
 
-\---
+## 📊 Example Output
+
+![Leaderboard](assets/leaderboard.png)
 
 
 
